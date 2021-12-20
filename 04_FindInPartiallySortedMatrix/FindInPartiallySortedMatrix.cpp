@@ -19,39 +19,34 @@ https://github.com/zhedahht/CodingInterviewChinese2/blob/master/LICENSE.txt)
 
 #include <cstdio>
 
-bool Find(int* matrix, int rows, int columns, int number)
+// 从右上角[0,c-1]开始遍历
+// if number > [0, c-1], cmp(number, [1, c-1]); elif number < [0, c-1], cmp(number, [0, c-2])
+// until c < 0 || r >= rows
+bool Find(int *matrix, int rows, int columns, int number)
 {
-    bool found = false;
-
-    if(matrix != nullptr && rows > 0 && columns > 0)
+    if (matrix == nullptr || rows <= 0 || columns <= 0)
+        return false;
+    int r = 0, c = columns - 1;
+    while (r < rows && c >= 0)
     {
-        int row = 0;
-        int column = columns - 1;
-        while(row < rows && column >=0)
-        {
-            if(matrix[row * columns + column] == number)
-            {
-                found = true;
-                break;
-            }
-            else if(matrix[row * columns + column] > number)
-                -- column;
-            else
-                ++ row;
-        }
+        if (matrix[r * columns + c] == number)
+            return true;
+        else if (matrix[r * columns + c] > number)
+            c--;
+        else
+            r++;
     }
-
-    return found;
+    return false;
 }
 
 // ====================测试代码====================
-void Test(char* testName, int* matrix, int rows, int columns, int number, bool expected)
+void Test(char *testName, int *matrix, int rows, int columns, int number, bool expected)
 {
-    if(testName != nullptr)
+    if (testName != nullptr)
         printf("%s begins: ", testName);
 
     bool result = Find(matrix, rows, columns, number);
-    if(result == expected)
+    if (result == expected)
         printf("Passed.\n");
     else
         printf("Failed.\n");
@@ -65,7 +60,7 @@ void Test(char* testName, int* matrix, int rows, int columns, int number, bool e
 void Test1()
 {
     int matrix[][4] = {{1, 2, 8, 9}, {2, 4, 9, 12}, {4, 7, 10, 13}, {6, 8, 11, 15}};
-    Test("Test1", (int*)matrix, 4, 4, 7, true);
+    Test("Test1", (int *)matrix, 4, 4, 7, true);
 }
 
 //  1   2   8   9
@@ -76,7 +71,7 @@ void Test1()
 void Test2()
 {
     int matrix[][4] = {{1, 2, 8, 9}, {2, 4, 9, 12}, {4, 7, 10, 13}, {6, 8, 11, 15}};
-    Test("Test2", (int*)matrix, 4, 4, 5, false);
+    Test("Test2", (int *)matrix, 4, 4, 5, false);
 }
 
 //  1   2   8   9
@@ -87,7 +82,7 @@ void Test2()
 void Test3()
 {
     int matrix[][4] = {{1, 2, 8, 9}, {2, 4, 9, 12}, {4, 7, 10, 13}, {6, 8, 11, 15}};
-    Test("Test3", (int*)matrix, 4, 4, 1, true);
+    Test("Test3", (int *)matrix, 4, 4, 1, true);
 }
 
 //  1   2   8   9
@@ -98,7 +93,7 @@ void Test3()
 void Test4()
 {
     int matrix[][4] = {{1, 2, 8, 9}, {2, 4, 9, 12}, {4, 7, 10, 13}, {6, 8, 11, 15}};
-    Test("Test4", (int*)matrix, 4, 4, 15, true);
+    Test("Test4", (int *)matrix, 4, 4, 15, true);
 }
 
 //  1   2   8   9
@@ -109,7 +104,7 @@ void Test4()
 void Test5()
 {
     int matrix[][4] = {{1, 2, 8, 9}, {2, 4, 9, 12}, {4, 7, 10, 13}, {6, 8, 11, 15}};
-    Test("Test5", (int*)matrix, 4, 4, 0, false);
+    Test("Test5", (int *)matrix, 4, 4, 0, false);
 }
 
 //  1   2   8   9
@@ -120,7 +115,7 @@ void Test5()
 void Test6()
 {
     int matrix[][4] = {{1, 2, 8, 9}, {2, 4, 9, 12}, {4, 7, 10, 13}, {6, 8, 11, 15}};
-    Test("Test6", (int*)matrix, 4, 4, 16, false);
+    Test("Test6", (int *)matrix, 4, 4, 16, false);
 }
 
 // 鲁棒性测试，输入空指针
@@ -129,7 +124,7 @@ void Test7()
     Test("Test7", nullptr, 0, 0, 16, false);
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     Test1();
     Test2();
@@ -141,4 +136,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-

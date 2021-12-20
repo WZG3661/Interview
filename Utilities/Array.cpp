@@ -12,9 +12,10 @@ https://github.com/zhedahht/CodingInterviewChinese2/blob/master/LICENSE.txt)
 // 作者：何海涛
 //==================================================================
 
-#include <stdlib.h>
 #include "Array.h"
 #include <exception>
+#include <iostream>
+#include <stdlib.h>
 
 // Random Partition
 int RandomInRange(int min, int max)
@@ -23,7 +24,7 @@ int RandomInRange(int min, int max)
     return random;
 }
 
-void Swap(int* num1, int* num2)
+void Swap(int *num1, int *num2)
 {
     int temp = *num1;
     *num1 = *num2;
@@ -32,24 +33,25 @@ void Swap(int* num1, int* num2)
 
 int Partition(int data[], int length, int start, int end)
 {
-    if(data == nullptr || length <= 0 || start < 0 || end >= length)
-        throw new std::exception("Invalid Parameters");
+    if (data == nullptr || length <= 0 || start < 0 || end >= length)
+        // throw new std::exception();
+        std::cerr << "Invalid Parameters\n";
 
     int index = RandomInRange(start, end);
     Swap(&data[index], &data[end]);
 
     int small = start - 1;
-    for(index = start; index < end; ++ index)
+    for (index = start; index < end; ++index)
     {
-        if(data[index] < data[end])
+        if (data[index] < data[end])
         {
-            ++ small;
-            if(small != index)
+            ++small;
+            if (small != index)
                 Swap(&data[index], &data[small]);
         }
     }
 
-    ++ small;
+    ++small;
     Swap(&data[small], &data[end]);
 
     return small;

@@ -18,36 +18,96 @@ https://github.com/zhedahht/CodingInterviewChinese2/blob/master/LICENSE.txt)
 // 那么对应的输出是重复的数字2或者3。
 
 #include <cstdio>
+#include <iostream>
 
 // 参数:
 //        numbers:     一个整数数组
 //        length:      数组的长度
 //        duplication: (输出) 数组中的一个重复的数字
-// 返回值:             
+// 返回值:
 //        true  - 输入有效，并且数组中存在重复的数字
 //        false - 输入无效，或者数组中没有重复的数字
-bool duplicate(int numbers[], int length, int* duplication)
+
+// 方法1：建立一个mark数组，记录每个元素出现的次数
+// 空间复杂度：O(n)
+// bool duplicate(int numbers[], int length, int *duplication)
+// {
+//     int *mark = new int(length);
+//     for (int i = 0; i < length; ++i)
+//     {
+//         mark[i] = 0;
+//     }
+//     int i = 0;
+//     for (; i < length; ++i)
+//     {
+//         if (numbers[i] < 0 || numbers[i] >= length)
+//             return false;
+
+//         mark[numbers[i]]++;
+//         if (mark[numbers[i]] > 1)
+//         {
+//             *duplication = numbers[i];
+//             break;
+//         }
+//     }
+
+//     delete[] mark;
+//     if (i == length)
+//         return false;
+//     return true;
+// }
+
+// 方法2：将元素放到对应下标的位置处，若该位置处存在相同元素，则说明该元素重复
+bool duplicate(int numbers[], int length, int *duplication)
 {
-    if(numbers == nullptr || length <= 0)
+    if (numbers == nullptr || length < 0)
         return false;
 
-    for(int i = 0; i < length; ++i)
+    int i = 0;
+    for (; i < length; ++i)
     {
-        if(numbers[i] < 0 || numbers[i] > length - 1)
+        if (numbers[i] != i)
+        {
+            if (numbers[i] < 0 || numbers[i] >= length)
+                return false;
+
+            if (numbers[i] == numbers[numbers[i]])
+            {
+                *duplication = numbers[i];
+                break;
+            }
+            std::swap(numbers[i], numbers[numbers[i]]);
+            i--;
+        }
+    }
+
+    if (i == length)
+        return false;
+    return true;
+}
+
+bool duplicate(int numbers[], int length, int *duplication)
+{
+    if (numbers == nullptr || length <= 0)
+        return false;
+
+    for (int i = 0; i < length; ++i)
+    {
+        if (numbers[i] < 0 || numbers[i] > length - 1)
             return false;
     }
 
-    for(int i = 0; i < length; ++i)
+    for (int i = 0; i < length; ++i)
     {
-        while(numbers[i] != i)
+        while (numbers[i] != i)
         {
-            if(numbers[i] == numbers[numbers[i]])
+            if (numbers[i] == numbers[numbers[i]])
             {
                 *duplication = numbers[i];
                 return true;
             }
 
-            // 交换numbers[i]和numbers[numbers[i]]             
+            // ????numbers[i]??numbers[numbers[i]]
             int temp = numbers[i];
             numbers[i] = numbers[temp];
             numbers[temp] = temp;
@@ -60,27 +120,27 @@ bool duplicate(int numbers[], int length, int* duplication)
 // ====================测试代码====================
 bool contains(int array[], int length, int number)
 {
-    for(int i = 0; i < length; ++i)
+    for (int i = 0; i < length; ++i)
     {
-        if(array[i] == number)
+        if (array[i] == number)
             return true;
     }
 
     return false;
 }
 
-void test(char* testName, int numbers[], int lengthNumbers, int expected[], int expectedExpected, bool validArgument)
+void test(char *testName, int numbers[], int lengthNumbers, int expected[], int expectedExpected, bool validArgument)
 {
     printf("%s begins: ", testName);
 
     int duplication;
     bool validInput = duplicate(numbers, lengthNumbers, &duplication);
 
-    if(validArgument == validInput)
+    if (validArgument == validInput)
     {
-        if(validArgument)
+        if (validArgument)
         {
-            if(contains(expected, expectedExpected, duplication))
+            if (contains(expected, expectedExpected, duplication))
                 printf("Passed.\n");
             else
                 printf("FAILED.\n");
@@ -95,52 +155,52 @@ void test(char* testName, int numbers[], int lengthNumbers, int expected[], int 
 // 重复的数字是数组中最小的数字
 void test1()
 {
-    int numbers[] = { 2, 1, 3, 1, 4 };
-    int duplications[] = { 1 };
+    int numbers[] = {2, 1, 3, 1, 4};
+    int duplications[] = {1};
     test("Test1", numbers, sizeof(numbers) / sizeof(int), duplications, sizeof(duplications) / sizeof(int), true);
 }
 
 // 重复的数字是数组中最大的数字
 void test2()
 {
-    int numbers[] = { 2, 4, 3, 1, 4 };
-    int duplications[] = { 4 };
+    int numbers[] = {2, 4, 3, 1, 4};
+    int duplications[] = {4};
     test("Test2", numbers, sizeof(numbers) / sizeof(int), duplications, sizeof(duplications) / sizeof(int), true);
 }
 
 // 数组中存在多个重复的数字
 void test3()
 {
-    int numbers[] = { 2, 4, 2, 1, 4 };
-    int duplications[] = { 2, 4 };
+    int numbers[] = {2, 4, 2, 1, 4};
+    int duplications[] = {2, 4};
     test("Test3", numbers, sizeof(numbers) / sizeof(int), duplications, sizeof(duplications) / sizeof(int), true);
 }
 
 // 没有重复的数字
 void test4()
 {
-    int numbers[] = { 2, 1, 3, 0, 4 };
-    int duplications[] = { -1 }; // not in use in the test function
+    int numbers[] = {2, 1, 3, 0, 4};
+    int duplications[] = {-1}; // not in use in the test function
     test("Test4", numbers, sizeof(numbers) / sizeof(int), duplications, sizeof(duplications) / sizeof(int), false);
 }
 
 // 没有重复的数字
 void test5()
 {
-    int numbers[] = { 2, 1, 3, 5, 4 };
-    int duplications[] = { -1 }; // not in use in the test function
+    int numbers[] = {2, 1, 3, 5, 4};
+    int duplications[] = {-1}; // not in use in the test function
     test("Test5", numbers, sizeof(numbers) / sizeof(int), duplications, sizeof(duplications) / sizeof(int), false);
 }
 
 // 无效的输入
 void test6()
 {
-    int* numbers = nullptr;
-    int duplications[] = { -1 }; // not in use in the test function
+    int *numbers = nullptr;
+    int duplications[] = {-1}; // not in use in the test function
     test("Test6", numbers, 0, duplications, sizeof(duplications) / sizeof(int), false);
 }
 
-void main()
+int main()
 {
     test1();
     test2();
@@ -148,4 +208,5 @@ void main()
     test4();
     test5();
     test6();
+    return 0;
 }

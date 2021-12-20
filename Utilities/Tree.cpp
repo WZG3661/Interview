@@ -13,34 +13,35 @@ https://github.com/zhedahht/CodingInterviewChinese2/blob/master/LICENSE.txt)
 //==================================================================
 
 #include "Tree.h"
+#include <stdio.h>
 
-TreeNode* CreateTreeNode(int value)
+TreeNode *CreateTreeNode(int value)
 {
-    TreeNode* pNode = new TreeNode();
+    TreeNode *pNode = new TreeNode();
     pNode->m_nValue = value;
 
     return pNode;
 }
 
-void ConnectTreeNodes(TreeNode* pParent, TreeNode* pChild)
+void ConnectTreeNodes(TreeNode *pParent, TreeNode *pChild)
 {
-    if(pParent != nullptr)
+    if (pParent != nullptr)
     {
         pParent->m_vChildren.push_back(pChild);
     }
 }
 
-void PrintTreeNode(const TreeNode* pNode)
+void PrintTreeNode(const TreeNode *pNode)
 {
-    if(pNode != nullptr)
+    if (pNode != nullptr)
     {
         printf("value of this node is: %d.\n", pNode->m_nValue);
 
         printf("its children is as the following:\n");
-        std::vector<TreeNode*>::const_iterator i = pNode->m_vChildren.begin();
-        while(i < pNode->m_vChildren.end())
+        std::vector<TreeNode *>::const_iterator i = pNode->m_vChildren.begin();
+        while (i < pNode->m_vChildren.end())
         {
-            if(*i != nullptr)
+            if (*i != nullptr)
                 printf("%d\t", (*i)->m_nValue);
         }
 
@@ -54,14 +55,14 @@ void PrintTreeNode(const TreeNode* pNode)
     printf("\n");
 }
 
-void PrintTree(const TreeNode* pRoot)
+void PrintTree(const TreeNode *pRoot)
 {
     PrintTreeNode(pRoot);
 
-    if(pRoot != nullptr)
+    if (pRoot != nullptr)
     {
-        std::vector<TreeNode*>::const_iterator i = pRoot->m_vChildren.begin();
-        while(i < pRoot->m_vChildren.end())
+        std::vector<TreeNode *>::const_iterator i = pRoot->m_vChildren.begin();
+        while (i < pRoot->m_vChildren.end())
         {
             PrintTree(*i);
             ++i;
@@ -69,12 +70,12 @@ void PrintTree(const TreeNode* pRoot)
     }
 }
 
-void DestroyTree(TreeNode* pRoot)
+void DestroyTree(TreeNode *pRoot)
 {
-    if(pRoot != nullptr)
+    if (pRoot != nullptr)
     {
-        std::vector<TreeNode*>::iterator i = pRoot->m_vChildren.begin();
-        while(i < pRoot->m_vChildren.end())
+        std::vector<TreeNode *>::iterator i = pRoot->m_vChildren.begin();
+        while (i < pRoot->m_vChildren.end())
         {
             DestroyTree(*i);
             ++i;
