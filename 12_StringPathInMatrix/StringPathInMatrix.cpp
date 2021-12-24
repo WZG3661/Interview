@@ -24,229 +24,224 @@ https://github.com/zhedahht/CodingInterviewChinese2/blob/master/LICENSE.txt)
 // J D E H
 
 #include <cstdio>
-#include <string>
+#include <iostream>
 #include <stack>
+#include <string.h>
+#include <string>
 
 using namespace std;
 
-bool hasPathCore(const char* matrix, int rows, int cols, int row, int col, const char* str, int& pathLength, bool* visited);
+// 遍历每个元素，作为字符串的起点，然后不断搜索路径
+// 使用同样大小的矩阵记录遍历过的位置
+bool FindPath(const char *matrix, int rows, int cols, int pos_i, int pos_j, const char *str, int str_count, bool *mark);
 
-bool hasPath(const char* matrix, int rows, int cols, const char* str)
+bool hasPath(const char *matrix, int rows, int cols, const char *str)
 {
-    if(matrix == nullptr || rows < 1 || cols < 1 || str == nullptr)
+    if (!matrix || rows <= 0 || cols <= 0 || !str)
         return false;
 
-    bool *visited = new bool[rows * cols];
-    memset(visited, 0, rows * cols);
+    bool *mark = new bool[rows * cols];
+    memset(mark, false, rows * cols);
 
-    int pathLength = 0;
-    for(int row = 0; row < rows; ++row)
+    for (int i = 0; i < rows; ++i)
     {
-        for(int col = 0; col < cols; ++col)
+        for (int j = 0; j < cols; ++j)
         {
-            if(hasPathCore(matrix, rows, cols, row, col, str,
-                pathLength, visited))
+            if (matrix[i * cols + j] == str[0])
             {
-                return true;
+                mark[i * cols + j] = true;
+                if (FindPath(matrix, rows, cols, i, j, str, 1, mark))
+                    return true;
+                else
+                    mark[i * cols + j] = false;
             }
         }
     }
-
-    delete[] visited;
-
     return false;
 }
 
-bool hasPathCore(const char* matrix, int rows, int cols, int row,
-    int col, const char* str, int& pathLength, bool* visited)
+int next_pos_i[4] = {-1, 1, 0, 0};
+int next_pos_j[4] = {0, 0, -1, 1};
+bool FindPath(const char *matrix, int rows, int cols, int pos_i, int pos_j, const char *str, int str_count, bool *mark)
 {
-    if(str[pathLength] == '\0')
+    if (str[str_count] == '\0')
         return true;
 
-    bool hasPath = false;
-    if(row >= 0 && row < rows && col >= 0 && col < cols
-        && matrix[row * cols + col] == str[pathLength]
-        && !visited[row * cols + col])
+    for (int k = 0; k < 4; ++k)
     {
-        ++pathLength;
-        visited[row * cols + col] = true;
+        int next_i = pos_i + next_pos_i[k];
+        int next_j = pos_j + next_pos_j[k];
+        if (next_i < 0 || next_i >= rows || next_j < 0 || next_j >= cols)
+            continue;
 
-        hasPath = hasPathCore(matrix, rows, cols, row, col - 1,
-            str, pathLength, visited)
-            || hasPathCore(matrix, rows, cols, row - 1, col,
-                str, pathLength, visited)
-            || hasPathCore(matrix, rows, cols, row, col + 1,
-                str, pathLength, visited)
-            || hasPathCore(matrix, rows, cols, row + 1, col,
-                str, pathLength, visited);
-
-        if(!hasPath)
+        if (!mark[next_i * cols + next_j] && matrix[next_i * cols + next_j] == str[str_count])
         {
-            --pathLength;
-            visited[row * cols + col] = false;
+            mark[next_i * cols + next_j] = true;
+            if (FindPath(matrix, rows, cols, next_i, next_j, str, str_count + 1, mark))
+                return true;
+            else
+                mark[next_i * cols + next_j] = false;
         }
     }
-
-    return hasPath;
+    return false;
 }
-
 // ====================测试代码====================
-void Test(const char* testName, const char* matrix, int rows, int cols, const char* str, bool expected)
+void Test(const char *testName, const char *matrix, int rows, int cols, const char *str, bool expected)
 {
-    if(testName != nullptr)
+    if (testName != nullptr)
         printf("%s begins: ", testName);
 
-    if(hasPath(matrix, rows, cols, str) == expected)
+    if (hasPath(matrix, rows, cols, str) == expected)
         printf("Passed.\n");
     else
         printf("FAILED.\n");
 }
 
-//ABTG
-//CFCS
-//JDEH
+// ABTG
+// CFCS
+// JDEH
 
-//BFCE
+// BFCE
 void Test1()
 {
-    const char* matrix = "ABTGCFCSJDEH";
-    const char* str = "BFCE";
+    const char *matrix = "ABTGCFCSJDEH";
+    const char *str = "BFCE";
 
-    Test("Test1", (const char*) matrix, 3, 4, str, true);
+    Test("Test1", (const char *)matrix, 3, 4, str, true);
 }
 
-//ABCE
-//SFCS
-//ADEE
+// ABCE
+// SFCS
+// ADEE
 
-//SEE
+// SEE
 void Test2()
 {
-    const char* matrix = "ABCESFCSADEE";
-    const char* str = "SEE";
+    const char *matrix = "ABCESFCSADEE";
+    const char *str = "SEE";
 
-    Test("Test2", (const char*) matrix, 3, 4, str, true);
+    Test("Test2", (const char *)matrix, 3, 4, str, true);
 }
 
-//ABTG
-//CFCS
-//JDEH
+// ABTG
+// CFCS
+// JDEH
 
-//ABFB
+// ABFB
 void Test3()
 {
-    const char* matrix = "ABTGCFCSJDEH";
-    const char* str = "ABFB";
+    const char *matrix = "ABTGCFCSJDEH";
+    const char *str = "ABFB";
 
-    Test("Test3", (const char*) matrix, 3, 4, str, false);
+    Test("Test3", (const char *)matrix, 3, 4, str, false);
 }
 
-//ABCEHJIG
-//SFCSLOPQ
-//ADEEMNOE
-//ADIDEJFM
-//VCEIFGGS
+// ABCEHJIG
+// SFCSLOPQ
+// ADEEMNOE
+// ADIDEJFM
+// VCEIFGGS
 
-//SLHECCEIDEJFGGFIE
+// SLHECCEIDEJFGGFIE
 void Test4()
 {
-    const char* matrix = "ABCEHJIGSFCSLOPQADEEMNOEADIDEJFMVCEIFGGS";
-    const char* str = "SLHECCEIDEJFGGFIE";
+    const char *matrix = "ABCEHJIGSFCSLOPQADEEMNOEADIDEJFMVCEIFGGS";
+    const char *str = "SLHECCEIDEJFGGFIE";
 
-    Test("Test4", (const char*) matrix, 5, 8, str, true);
+    Test("Test4", (const char *)matrix, 5, 8, str, true);
 }
 
-//ABCEHJIG
-//SFCSLOPQ
-//ADEEMNOE
-//ADIDEJFM
-//VCEIFGGS
+// ABCEHJIG
+// SFCSLOPQ
+// ADEEMNOE
+// ADIDEJFM
+// VCEIFGGS
 
-//SGGFIECVAASABCEHJIGQEM
+// SGGFIECVAASABCEHJIGQEM
 void Test5()
 {
-    const char* matrix = "ABCEHJIGSFCSLOPQADEEMNOEADIDEJFMVCEIFGGS";
-    const char* str = "SGGFIECVAASABCEHJIGQEM";
+    const char *matrix = "ABCEHJIGSFCSLOPQADEEMNOEADIDEJFMVCEIFGGS";
+    const char *str = "SGGFIECVAASABCEHJIGQEM";
 
-    Test("Test5", (const char*) matrix, 5, 8, str, true);
+    Test("Test5", (const char *)matrix, 5, 8, str, true);
 }
 
-//ABCEHJIG
-//SFCSLOPQ
-//ADEEMNOE
-//ADIDEJFM
-//VCEIFGGS
+// ABCEHJIG
+// SFCSLOPQ
+// ADEEMNOE
+// ADIDEJFM
+// VCEIFGGS
 
-//SGGFIECVAASABCEEJIGOEM
+// SGGFIECVAASABCEEJIGOEM
 void Test6()
 {
-    const char* matrix = "ABCEHJIGSFCSLOPQADEEMNOEADIDEJFMVCEIFGGS";
-    const char* str = "SGGFIECVAASABCEEJIGOEM";
+    const char *matrix = "ABCEHJIGSFCSLOPQADEEMNOEADIDEJFMVCEIFGGS";
+    const char *str = "SGGFIECVAASABCEEJIGOEM";
 
-    Test("Test6", (const char*) matrix, 5, 8, str, false);
+    Test("Test6", (const char *)matrix, 5, 8, str, false);
 }
 
-//ABCEHJIG
-//SFCSLOPQ
-//ADEEMNOE
-//ADIDEJFM
-//VCEIFGGS
+// ABCEHJIG
+// SFCSLOPQ
+// ADEEMNOE
+// ADIDEJFM
+// VCEIFGGS
 
-//SGGFIECVAASABCEHJIGQEMS
+// SGGFIECVAASABCEHJIGQEMS
 void Test7()
 {
-    const char* matrix = "ABCEHJIGSFCSLOPQADEEMNOEADIDEJFMVCEIFGGS";
-    const char* str = "SGGFIECVAASABCEHJIGQEMS";
+    const char *matrix = "ABCEHJIGSFCSLOPQADEEMNOEADIDEJFMVCEIFGGS";
+    const char *str = "SGGFIECVAASABCEHJIGQEMS";
 
-    Test("Test7", (const char*) matrix, 5, 8, str, false);
+    Test("Test7", (const char *)matrix, 5, 8, str, false);
 }
 
-//AAAA
-//AAAA
-//AAAA
+// AAAA
+// AAAA
+// AAAA
 
-//AAAAAAAAAAAA
+// AAAAAAAAAAAA
 void Test8()
 {
-    const char* matrix = "AAAAAAAAAAAA";
-    const char* str = "AAAAAAAAAAAA";
+    const char *matrix = "AAAAAAAAAAAA";
+    const char *str = "AAAAAAAAAAAA";
 
-    Test("Test8", (const char*) matrix, 3, 4, str, true);
+    Test("Test8", (const char *)matrix, 3, 4, str, true);
 }
 
-//AAAA
-//AAAA
-//AAAA
+// AAAA
+// AAAA
+// AAAA
 
-//AAAAAAAAAAAAA
+// AAAAAAAAAAAAA
 void Test9()
 {
-    const char* matrix = "AAAAAAAAAAAA";
-    const char* str = "AAAAAAAAAAAAA";
+    const char *matrix = "AAAAAAAAAAAA";
+    const char *str = "AAAAAAAAAAAAA";
 
-    Test("Test9", (const char*) matrix, 3, 4, str, false);
+    Test("Test9", (const char *)matrix, 3, 4, str, false);
 }
 
-//A
+// A
 
-//A
+// A
 void Test10()
 {
-    const char* matrix = "A";
-    const char* str = "A";
+    const char *matrix = "A";
+    const char *str = "A";
 
-    Test("Test10", (const char*) matrix, 1, 1, str, true);
+    Test("Test10", (const char *)matrix, 1, 1, str, true);
 }
 
-//A
+// A
 
-//B
+// B
 void Test11()
 {
-    const char* matrix = "A";
-    const char* str = "B";
+    const char *matrix = "A";
+    const char *str = "B";
 
-    Test("Test11", (const char*) matrix, 1, 1, str, false);
+    Test("Test11", (const char *)matrix, 1, 1, str, false);
 }
 
 void Test12()
@@ -254,7 +249,7 @@ void Test12()
     Test("Test12", nullptr, 0, 0, nullptr, false);
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     Test1();
     Test2();

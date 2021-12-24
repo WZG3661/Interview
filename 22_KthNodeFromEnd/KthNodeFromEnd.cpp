@@ -18,35 +18,29 @@ https://github.com/zhedahht/CodingInterviewChinese2/blob/master/LICENSE.txt)
 // 从头结点开始它们的值依次是1、2、3、4、5、6。这个链表的倒数第3个结点是
 // 值为4的结点。
 
+#include "../Utilities/List.h"
 #include <cstdio>
-#include "..\Utilities\List.h"
 
-ListNode* FindKthToTail(ListNode* pListHead, unsigned int k)
+ListNode *FindKthToTail(ListNode *pListHead, unsigned int k)
 {
-    if(pListHead == nullptr || k == 0)
+    if (!pListHead || k <= 0)
         return nullptr;
 
-    ListNode *pAhead = pListHead;
-    ListNode *pBehind = nullptr;
-
-    for(unsigned int i = 0; i < k - 1; ++ i)
+    ListNode *pNode = pListHead;
+    ListNode *pPre = pListHead;
+    // pNode先提前走k步
+    for (int i = 0; i < k; ++i)
     {
-        if(pAhead->m_pNext != nullptr)
-            pAhead = pAhead->m_pNext;
-        else
-        {
+        pNode = pNode->m_pNext;
+        if (!pNode && i)
             return nullptr;
-        }
     }
-
-    pBehind = pListHead;
-    while(pAhead->m_pNext != nullptr)
+    while (pNode)
     {
-        pAhead = pAhead->m_pNext;
-        pBehind = pBehind->m_pNext;
+        pNode = pNode->m_pNext;
+        pPre = pPre->m_pNext;
     }
-
-    return pBehind;
+    return pPre;
 }
 
 // ====================测试代码====================
@@ -54,11 +48,11 @@ ListNode* FindKthToTail(ListNode* pListHead, unsigned int k)
 void Test1()
 {
     printf("=====Test1 starts:=====\n");
-    ListNode* pNode1 = CreateListNode(1);
-    ListNode* pNode2 = CreateListNode(2);
-    ListNode* pNode3 = CreateListNode(3);
-    ListNode* pNode4 = CreateListNode(4);
-    ListNode* pNode5 = CreateListNode(5);
+    ListNode *pNode1 = CreateListNode(1);
+    ListNode *pNode2 = CreateListNode(2);
+    ListNode *pNode3 = CreateListNode(3);
+    ListNode *pNode4 = CreateListNode(4);
+    ListNode *pNode5 = CreateListNode(5);
 
     ConnectListNodes(pNode1, pNode2);
     ConnectListNodes(pNode2, pNode3);
@@ -66,7 +60,7 @@ void Test1()
     ConnectListNodes(pNode4, pNode5);
 
     printf("expected result: 4.\n");
-    ListNode* pNode = FindKthToTail(pNode1, 2);
+    ListNode *pNode = FindKthToTail(pNode1, 2);
     PrintListNode(pNode);
 
     DestroyList(pNode1);
@@ -76,11 +70,11 @@ void Test1()
 void Test2()
 {
     printf("=====Test2 starts:=====\n");
-    ListNode* pNode1 = CreateListNode(1);
-    ListNode* pNode2 = CreateListNode(2);
-    ListNode* pNode3 = CreateListNode(3);
-    ListNode* pNode4 = CreateListNode(4);
-    ListNode* pNode5 = CreateListNode(5);
+    ListNode *pNode1 = CreateListNode(1);
+    ListNode *pNode2 = CreateListNode(2);
+    ListNode *pNode3 = CreateListNode(3);
+    ListNode *pNode4 = CreateListNode(4);
+    ListNode *pNode5 = CreateListNode(5);
 
     ConnectListNodes(pNode1, pNode2);
     ConnectListNodes(pNode2, pNode3);
@@ -88,7 +82,7 @@ void Test2()
     ConnectListNodes(pNode4, pNode5);
 
     printf("expected result: 5.\n");
-    ListNode* pNode = FindKthToTail(pNode1, 1);
+    ListNode *pNode = FindKthToTail(pNode1, 1);
     PrintListNode(pNode);
 
     DestroyList(pNode1);
@@ -98,11 +92,11 @@ void Test2()
 void Test3()
 {
     printf("=====Test3 starts:=====\n");
-    ListNode* pNode1 = CreateListNode(1);
-    ListNode* pNode2 = CreateListNode(2);
-    ListNode* pNode3 = CreateListNode(3);
-    ListNode* pNode4 = CreateListNode(4);
-    ListNode* pNode5 = CreateListNode(5);
+    ListNode *pNode1 = CreateListNode(1);
+    ListNode *pNode2 = CreateListNode(2);
+    ListNode *pNode3 = CreateListNode(3);
+    ListNode *pNode4 = CreateListNode(4);
+    ListNode *pNode5 = CreateListNode(5);
 
     ConnectListNodes(pNode1, pNode2);
     ConnectListNodes(pNode2, pNode3);
@@ -110,7 +104,7 @@ void Test3()
     ConnectListNodes(pNode4, pNode5);
 
     printf("expected result: 1.\n");
-    ListNode* pNode = FindKthToTail(pNode1, 5);
+    ListNode *pNode = FindKthToTail(pNode1, 5);
     PrintListNode(pNode);
 
     DestroyList(pNode1);
@@ -121,7 +115,7 @@ void Test4()
 {
     printf("=====Test4 starts:=====\n");
     printf("expected result: nullptr.\n");
-    ListNode* pNode = FindKthToTail(nullptr, 100);
+    ListNode *pNode = FindKthToTail(nullptr, 100);
     PrintListNode(pNode);
 }
 
@@ -129,11 +123,11 @@ void Test4()
 void Test5()
 {
     printf("=====Test5 starts:=====\n");
-    ListNode* pNode1 = CreateListNode(1);
-    ListNode* pNode2 = CreateListNode(2);
-    ListNode* pNode3 = CreateListNode(3);
-    ListNode* pNode4 = CreateListNode(4);
-    ListNode* pNode5 = CreateListNode(5);
+    ListNode *pNode1 = CreateListNode(1);
+    ListNode *pNode2 = CreateListNode(2);
+    ListNode *pNode3 = CreateListNode(3);
+    ListNode *pNode4 = CreateListNode(4);
+    ListNode *pNode5 = CreateListNode(5);
 
     ConnectListNodes(pNode1, pNode2);
     ConnectListNodes(pNode2, pNode3);
@@ -141,7 +135,7 @@ void Test5()
     ConnectListNodes(pNode4, pNode5);
 
     printf("expected result: nullptr.\n");
-    ListNode* pNode = FindKthToTail(pNode1, 6);
+    ListNode *pNode = FindKthToTail(pNode1, 6);
     PrintListNode(pNode);
 
     DestroyList(pNode1);
@@ -151,11 +145,11 @@ void Test5()
 void Test6()
 {
     printf("=====Test6 starts:=====\n");
-    ListNode* pNode1 = CreateListNode(1);
-    ListNode* pNode2 = CreateListNode(2);
-    ListNode* pNode3 = CreateListNode(3);
-    ListNode* pNode4 = CreateListNode(4);
-    ListNode* pNode5 = CreateListNode(5);
+    ListNode *pNode1 = CreateListNode(1);
+    ListNode *pNode2 = CreateListNode(2);
+    ListNode *pNode3 = CreateListNode(3);
+    ListNode *pNode4 = CreateListNode(4);
+    ListNode *pNode5 = CreateListNode(5);
 
     ConnectListNodes(pNode1, pNode2);
     ConnectListNodes(pNode2, pNode3);
@@ -163,13 +157,13 @@ void Test6()
     ConnectListNodes(pNode4, pNode5);
 
     printf("expected result: nullptr.\n");
-    ListNode* pNode = FindKthToTail(pNode1, 0);
+    ListNode *pNode = FindKthToTail(pNode1, 0);
     PrintListNode(pNode);
 
     DestroyList(pNode1);
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     Test1();
     Test2();
@@ -180,4 +174,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-

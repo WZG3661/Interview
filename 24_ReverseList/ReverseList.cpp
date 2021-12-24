@@ -16,37 +16,33 @@ https://github.com/zhedahht/CodingInterviewChinese2/blob/master/LICENSE.txt)
 // 题目：定义一个函数，输入一个链表的头结点，反转该链表并输出反转后链表的
 // 头结点。
 
+#include "../Utilities/List.h"
 #include <cstdio>
-#include "..\Utilities\List.h"
 
-ListNode* ReverseList(ListNode* pHead)
+ListNode *ReverseList(ListNode *pHead)
 {
-    ListNode* pReversedHead = nullptr;
-    ListNode* pNode = pHead;
-    ListNode* pPrev = nullptr;
-    while(pNode != nullptr)
+    if (!pHead)
+        return nullptr;
+
+    ListNode *pPre = nullptr;
+    ListNode *pNode = pHead;
+    while (pNode)
     {
-        ListNode* pNext = pNode->m_pNext;
-
-        if(pNext == nullptr)
-            pReversedHead = pNode;
-
-        pNode->m_pNext = pPrev;
-
-        pPrev = pNode;
-        pNode = pNext;
+        ListNode *pMid = pNode;
+        pNode = pNode->m_pNext;
+        pMid->m_pNext = pPre;
+        pPre = pMid;
     }
-
-    return pReversedHead;
+    return pPre;
 }
 
 // ====================测试代码====================
-ListNode* Test(ListNode* pHead)
+ListNode *Test(ListNode *pHead)
 {
     printf("The original list is: \n");
     PrintList(pHead);
 
-    ListNode* pReversedHead = ReverseList(pHead);
+    ListNode *pReversedHead = ReverseList(pHead);
 
     printf("The reversed list is: \n");
     PrintList(pReversedHead);
@@ -57,18 +53,18 @@ ListNode* Test(ListNode* pHead)
 // 输入的链表有多个结点
 void Test1()
 {
-    ListNode* pNode1 = CreateListNode(1);
-    ListNode* pNode2 = CreateListNode(2);
-    ListNode* pNode3 = CreateListNode(3);
-    ListNode* pNode4 = CreateListNode(4);
-    ListNode* pNode5 = CreateListNode(5);
+    ListNode *pNode1 = CreateListNode(1);
+    ListNode *pNode2 = CreateListNode(2);
+    ListNode *pNode3 = CreateListNode(3);
+    ListNode *pNode4 = CreateListNode(4);
+    ListNode *pNode5 = CreateListNode(5);
 
     ConnectListNodes(pNode1, pNode2);
     ConnectListNodes(pNode2, pNode3);
     ConnectListNodes(pNode3, pNode4);
     ConnectListNodes(pNode4, pNode5);
 
-    ListNode* pReversedHead = Test(pNode1);
+    ListNode *pReversedHead = Test(pNode1);
 
     DestroyList(pReversedHead);
 }
@@ -76,9 +72,9 @@ void Test1()
 // 输入的链表只有一个结点
 void Test2()
 {
-    ListNode* pNode1 = CreateListNode(1);
+    ListNode *pNode1 = CreateListNode(1);
 
-    ListNode* pReversedHead = Test(pNode1);
+    ListNode *pReversedHead = Test(pNode1);
 
     DestroyList(pReversedHead);
 }
@@ -89,7 +85,7 @@ void Test3()
     Test(nullptr);
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     Test1();
     Test2();
@@ -97,4 +93,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-

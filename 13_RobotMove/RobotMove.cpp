@@ -19,79 +19,69 @@ https://github.com/zhedahht/CodingInterviewChinese2/blob/master/LICENSE.txt)
 // 但它不能进入方格(35, 38)，因为3+5+3+8=19。请问该机器人能够到达多少个格子？
 
 #include <cstdio>
+#include <iostream>
+#include <string.h>
 
-int movingCountCore(int threshold, int rows, int cols, int row, int col, bool* visited);
-bool check(int threshold, int rows, int cols, int row, int col, bool* visited);
-int getDigitSum(int number);
+// 从起点开始深度优先遍历
+void movingCountCore(int threshold, int rows, int cols, int pos_i, int pos_j, int &count, bool *visited);
+bool DigitSum(int threshold, int pos_i, int pos_j);
 
 int movingCount(int threshold, int rows, int cols)
 {
-    if(threshold < 0 || rows <= 0 || cols <= 0)
+    if (threshold < 0 || rows <= 0 || cols <= 0)
         return 0;
-
     bool *visited = new bool[rows * cols];
-    for(int i = 0; i < rows * cols; ++i)
-        visited[i] = false;
+    memset(visited, false, rows * cols);
 
-    int count = movingCountCore(threshold, rows, cols,
-        0, 0, visited);
-
-    delete[] visited;
+    int count = 1;
+    visited[0] = true;
+    movingCountCore(threshold, rows, cols, 0, 0, count, visited);
 
     return count;
 }
 
-int movingCountCore(int threshold, int rows, int cols, int row,
-    int col, bool* visited)
+int next_move_i[4] = {-1, 1, 0, 0};
+int next_move_j[4] = {0, 0, -1, 1};
+void movingCountCore(int threshold, int rows, int cols, int pos_i, int pos_j, int &count, bool *visited)
 {
-    int count = 0;
-    if(check(threshold, rows, cols, row, col, visited))
+    for (int k = 0; k < 4; ++k)
     {
-        visited[row * cols + col] = true;
-
-        count = 1 + movingCountCore(threshold, rows, cols,
-            row - 1, col, visited)
-            + movingCountCore(threshold, rows, cols,
-                row, col - 1, visited)
-            + movingCountCore(threshold, rows, cols,
-                row + 1, col, visited)
-            + movingCountCore(threshold, rows, cols,
-                row, col + 1, visited);
+        int next_i = pos_i + next_move_i[k];
+        int next_j = pos_j + next_move_j[k];
+        if (next_i < 0 || next_i >= rows || next_j < 0 || next_j >= cols)
+            continue;
+        if (!visited[next_i * rows + next_j] && DigitSum(threshold, next_i, next_j))
+        {
+            visited[next_i * rows + next_j] = true;
+            movingCountCore(threshold, rows, cols, next_i, next_j, ++count, visited);
+        }
     }
-
-    return count;
 }
 
-bool check(int threshold, int rows, int cols, int row, int col,
-    bool* visited)
-{
-    if(row >= 0 && row < rows && col >= 0 && col < cols
-        && getDigitSum(row) + getDigitSum(col) <= threshold
-        && !visited[row* cols + col])
-        return true;
-
-    return false;
-}
-
-int getDigitSum(int number)
+bool DigitSum(int threshold, int pos_i, int pos_j)
 {
     int sum = 0;
-    while(number > 0)
+    while (pos_i)
     {
-        sum += number % 10;
-        number /= 10;
+        sum += pos_i % 10;
+        pos_i /= 10;
     }
-
-    return sum;
+    while (pos_j)
+    {
+        sum += pos_j % 10;
+        pos_j /= 10;
+    }
+    if (sum > threshold)
+        return false;
+    return true;
 }
-
 // ====================测试代码====================
-void test(char* testName, int threshold, int rows, int cols, int expected)
+void test(char *testName, int threshold, int rows, int cols, int expected)
 {
-    if(testName != nullptr)
+    if (testName != nullptr)
         printf("%s begins: ", testName);
 
-    if(movingCount(threshold, rows, cols) == expected)
+    if (movingCount(threshold, rows, cols) == expected)
         printf("Passed.\n");
     else
         printf("FAILED.\n");
@@ -151,7 +141,7 @@ void test9()
     test("Test9", -10, 10, 10, 0);
 }
 
-int main(int agrc, char* argv[])
+int main(int agrc, char *argv[])
 {
     test1();
     test2();

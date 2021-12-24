@@ -20,34 +20,33 @@ https://github.com/zhedahht/CodingInterviewChinese2/blob/master/LICENSE.txt)
 // ====================方法1：递归====================
 long long Fibonacci_Solution1(unsigned int n)
 {
-    if(n <= 0)
-        return 0;
-
-    if(n == 1)
+    if (n == 0)
+        return 1;
+    if (n == 1)
         return 1;
 
-    return Fibonacci_Solution1(n - 1) + Fibonacci_Solution1(n - 2);
+    else
+        return Fibonacci_Solution1(n - 1) + Fibonacci_Solution1(n - 2);
 }
 
 // ====================方法2：循环====================
-long long Fibonacci_Solution2(unsigned n)
+long long Fibonacci_Solution2(unsigned int n)
 {
-    int result[2] = {0, 1};
-    if(n < 2)
-        return result[n];
+    if (n == 0)
+        return 1;
+    if (n == 1)
+        return 1;
 
-    long long  fibNMinusOne = 1;
-    long long  fibNMinusTwo = 0;
-    long long  fibN = 0;
-    for(unsigned int i = 2; i <= n; ++ i)
+    long long NUM1 = 1;
+    long long NUM2 = 1;
+    long long res;
+    for (int i = 2; i <= n; ++i)
     {
-        fibN = fibNMinusOne + fibNMinusTwo;
-
-        fibNMinusTwo = fibNMinusOne;
-        fibNMinusOne = fibN;
+        res = NUM1 + NUM2;
+        NUM1 = NUM2;
+        NUM2 = res;
     }
-
-     return fibN;
+    return res;
 }
 
 // ====================方法3：基于矩阵乘法====================
@@ -55,14 +54,12 @@ long long Fibonacci_Solution2(unsigned n)
 
 struct Matrix2By2
 {
-    Matrix2By2
-    (
-        long long m00 = 0, 
-        long long m01 = 0, 
-        long long m10 = 0, 
-        long long m11 = 0
-    )
-    :m_00(m00), m_01(m01), m_10(m10), m_11(m11) 
+    Matrix2By2(
+        long long m00 = 0,
+        long long m01 = 0,
+        long long m10 = 0,
+        long long m11 = 0)
+        : m_00(m00), m_01(m01), m_10(m10), m_11(m11)
     {
     }
 
@@ -72,11 +69,9 @@ struct Matrix2By2
     long long m_11;
 };
 
-Matrix2By2 MatrixMultiply
-(
-    const Matrix2By2& matrix1, 
-    const Matrix2By2& matrix2
-)
+Matrix2By2 MatrixMultiply(
+    const Matrix2By2 &matrix1,
+    const Matrix2By2 &matrix2)
 {
     return Matrix2By2(
         matrix1.m_00 * matrix2.m_00 + matrix1.m_01 * matrix2.m_10,
@@ -90,16 +85,16 @@ Matrix2By2 MatrixPower(unsigned int n)
     assert(n > 0);
 
     Matrix2By2 matrix;
-    if(n == 1)
+    if (n == 1)
     {
         matrix = Matrix2By2(1, 1, 1, 0);
     }
-    else if(n % 2 == 0)
+    else if (n % 2 == 0)
     {
         matrix = MatrixPower(n / 2);
         matrix = MatrixMultiply(matrix, matrix);
     }
-    else if(n % 2 == 1)
+    else if (n % 2 == 1)
     {
         matrix = MatrixPower((n - 1) / 2);
         matrix = MatrixMultiply(matrix, matrix);
@@ -112,7 +107,7 @@ Matrix2By2 MatrixPower(unsigned int n)
 long long Fibonacci_Solution3(unsigned int n)
 {
     int result[2] = {0, 1};
-    if(n < 2)
+    if (n < 2)
         return result[n];
 
     Matrix2By2 PowerNMinus2 = MatrixPower(n - 1);
@@ -122,23 +117,23 @@ long long Fibonacci_Solution3(unsigned int n)
 // ====================测试代码====================
 void Test(int n, int expected)
 {
-    if(Fibonacci_Solution1(n) == expected)
+    if (Fibonacci_Solution1(n) == expected)
         printf("Test for %d in solution1 passed.\n", n);
     else
         printf("Test for %d in solution1 failed.\n", n);
 
-    if(Fibonacci_Solution2(n) == expected)
+    if (Fibonacci_Solution2(n) == expected)
         printf("Test for %d in solution2 passed.\n", n);
     else
         printf("Test for %d in solution2 failed.\n", n);
 
-    if(Fibonacci_Solution3(n) == expected)
+    if (Fibonacci_Solution3(n) == expected)
         printf("Test for %d in solution3 passed.\n", n);
     else
         printf("Test for %d in solution3 failed.\n", n);
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     Test(0, 0);
     Test(1, 1);
@@ -156,4 +151,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-

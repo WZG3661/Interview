@@ -17,44 +17,92 @@ https://github.com/zhedahht/CodingInterviewChinese2/blob/master/LICENSE.txt)
 // 则打印出由字符a、b、c所能排列出来的所有字符串abc、acb、bac、bca、cab和cba。
 
 #include <cstdio>
-
-void Permutation(char* pStr, char* pBegin);
-
-void Permutation(char* pStr)
+#include <iostream>
+#include <string.h>
+#include <string>
+#include <vector>
+//===================================方法一
+//用visited记录是否遍历过
+void PermutationCore(char *pStr, std::string &part, int str_len, int visit_num, bool *visited,
+                     std::vector<std::string> &permutations);
+void Permutation(char *pStr)
 {
-    if(pStr == nullptr)
+    if (!pStr)
         return;
 
-    Permutation(pStr, pStr);
-}
+    int str_len = 0;
+    for (int i = 0; pStr[i] != '\0'; i++)
+        str_len++;
+    bool *visited = new bool[str_len];
+    memset(visited, false, str_len);
 
-void Permutation(char* pStr, char* pBegin)
+    std::vector<std::string> permutations;
+    std::string part;
+    PermutationCore(pStr, part, str_len, 0, visited, permutations);
+    return;
+}
+void PermutationCore(char *pStr, std::string &part, int str_len, int visit_num, bool *visited,
+                     std::vector<std::string> &permutations)
 {
-    if(*pBegin == '\0')
+    if (visit_num == str_len)
     {
-        printf("%s\n", pStr);
+        // std::cout << "\n";
+        permutations.push_back(part);
+        return;
     }
-    else
+
+    for (int i = 0; pStr[i] != '\0'; ++i)
     {
-        for(char* pCh = pBegin; *pCh != '\0'; ++ pCh)
-        {
-            char temp = *pCh;
-            *pCh = *pBegin;
-            *pBegin = temp;
+        if (visited[i])
+            continue;
 
-            Permutation(pStr, pBegin + 1);
-
-            temp = *pCh;
-            *pCh = *pBegin;
-            *pBegin = temp;
-        }
+        // std::cout << pStr[i];
+        part.push_back(pStr[i]);
+        visited[i] = true;
+        visit_num++;
+        PermutationCore(pStr, part, str_len, visit_num, visited, permutations);
+        part.pop_back();
+        visited[i] = false;
+        visit_num--;
     }
 }
+//================================方法二
+// 交换位置
+// void Permutation(char *pStr, char *pBegin);
+// void Permutation(char *pStr)
+// {
+//     if (pStr == nullptr)
+//         return;
 
+//     Permutation(pStr, pStr);
+// }
+
+// void Permutation(char *pStr, char *pBegin)
+// {
+//     if (*pBegin == '\0')
+//     {
+//         printf("%s\n", pStr);
+//     }
+//     else
+//     {
+//         for (char *pCh = pBegin; *pCh != '\0'; ++pCh)
+//         {
+//             char temp = *pCh;
+//             *pCh = *pBegin;
+//             *pBegin = temp;
+
+//             Permutation(pStr, pBegin + 1);
+
+//             temp = *pCh;
+//             *pCh = *pBegin;
+//             *pBegin = temp;
+//         }
+//     }
+// }
 // ====================测试代码====================
-void Test(char* pStr)
+void Test(char *pStr)
 {
-    if(pStr == nullptr)
+    if (pStr == nullptr)
         printf("Test for nullptr begins:\n");
     else
         printf("Test for %s begins:\n", pStr);
@@ -64,7 +112,7 @@ void Test(char* pStr)
     printf("\n");
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     Test(nullptr);
 
@@ -80,6 +128,8 @@ int main(int argc, char* argv[])
     char string4[] = "abc";
     Test(string4);
 
+    char string5[] = "abcd";
+    Test(string5);
+
     return 0;
 }
-
